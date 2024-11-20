@@ -13,6 +13,7 @@ class SearchRequest(BaseModel):
 class ResearchPaper(BaseModel):
     title: str
     authors: List[str]
-    publication_year: int
+    publication_year: Optional[int]
     cited_by_count: int
-    abstract: Optional[str] = None
+    abstract: Optional[str]
+

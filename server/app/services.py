@@ -1,8 +1,10 @@
 import requests
+from pyalex import Authors, Institutions, Publishers
 from app.config import BASE_OPENALEX_URL, EMAIL, MIN_CITED_BY_COUNT, logger
 from app.utils import get_id_list
 from app.models import ResearchPaper
 from typing import List, Optional
+import time
 
 def create_openalex_url(
     query: str,
@@ -37,23 +39,26 @@ def create_openalex_url(
         logger.error(f"Error constructing URL: {str(e)}")
         raise
 
-def fetch_relevant_papers(query: str, url: str) -> List[ResearchPaper]:
-    """Fetch relevant papers from OpenAlex API."""
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
+def fetch_with_retry(url, retries=3, timeout=20):
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, timeout=timeout)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if attempt < retries - 1:
+                logger.warning(f"Retrying... (Attempt {attempt + 1})")
+                time.sleep(2)
+            else:
+                raise e
 
+def fetch_relevant_papers(query: str, url: str) -> List[ResearchPaper]:
+    try:
+        data = fetch_with_retry(url, retries=3, timeout=20)
         papers = []
         for work in data.get('results', []):
-            paper = ResearchPaper(
-                title=work.get("title"),
-                authors=[author["display_name"] for author in work.get("authorships", [])],
-                publication_year=work.get("publication_year"),
-                cited_by_count=work.get("cited_by_count"),
-                abstract=work.get("abstract_inverted_index"),
-            )
-            papers.append(paper)
+            # Preprocess work to match expected attributes, if necessary
+            papers.append(ResearchPaper(**work))
         return papers
     except Exception as e:
         logger.error(f"Error fetching papers: {str(e)}")
