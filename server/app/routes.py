@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.models import SearchRequest
-from app.services import fetch_relevant_papers,download_pdf,generate_section_summaries
+from app.models import SearchRequest,ChatRequest
+from app.services import fetch_relevant_papers,download_pdf,generate_section_summaries,ask
 
 router = APIRouter()
 
@@ -29,12 +29,13 @@ async def get_paper(paper_url: str,pdf_name:str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/chat")
-async def get_chat():
+@router.post("/chat")
+async def get_chat(request: ChatRequest):
     """
     Get the chatbot response.
     """
     try:
-        return {"chat": "Hello, how can I help you today?"}
+        answer = ask(request.question)
+        return {"answer": answer}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

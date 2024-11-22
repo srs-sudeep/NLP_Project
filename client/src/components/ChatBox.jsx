@@ -23,9 +23,10 @@ const ChatBox = () => {
     const newChatHistory = [...chatHistory, { role: 'user', content: question }];
     setChatHistory(newChatHistory);
     
+    setQuestion('');
     try {
       // Send question to the backend
-    //   const response = await axios.post('http://localhost:8000/ask', { question });
+      const response = await axios.post('http://localhost:8000/chat', { question });
       
       // Add response to chat history
       setChatHistory([...newChatHistory, { role: 'bot', content: response.data.answer }]);
@@ -35,7 +36,6 @@ const ChatBox = () => {
     }
 
     // Clear the question input
-    setQuestion('');
   };
 
   return (

@@ -61,9 +61,9 @@ const Home = () => {
     <Container maxWidth="md" sx={{ mt: 2 }}>
       {/* Logo */}
       <Box sx={{ textAlign: 'center', mb: 6 }} className="flex flex-col justify-center items-center">
-        <img src="/logo.png" alt="Logo" className="h-15 md:h-57" />
+        <img src="/logo.png" alt="Logo" className="h-12 md:h-56" />
         <Typography sx={{ color: '#666', fontSize: '2rem' }} className="text-9xl font-italic">
-          Get answers to your research questions
+          AI Powered Research Paper and Chat Assistant
         </Typography>
       </Box>
 
@@ -74,12 +74,6 @@ const Home = () => {
           onClick={() => handleSearch('question')}
         >
           Ask a Question
-        </SearchButton>
-        <SearchButton
-          variant="contained"
-          onClick={() => handleSearch('literature')}
-        >
-          Literature Review
         </SearchButton>
       </Box>
       {/* Search Form */}
@@ -113,18 +107,18 @@ const Home = () => {
 
         {/* Filters */}
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-          {/* Journal */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <Typography variant="caption" sx={{ color: '#836F60', width: '150px', fontSize: '1.25rem' }}>
-              Journal
+              Author
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              {['Q1', 'Q2', 'Q3', 'Q4'].map((q) => (
-                <QuarterButton key={q} variant="outlined" onClick={() => setJournal(q)}>
-                  {q}
-                </QuarterButton>
-              ))}
-            </Box>
+            <TextField
+              size="small"
+              fullWidth
+              placeholder="Author name"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              sx={{ backgroundColor: '#fff' }}
+            />
           </Box>
 
           {/* Time Range */}
@@ -148,35 +142,6 @@ const Home = () => {
                 sx={{ width: '100px', backgroundColor: '#fff' }}
               />
             </Box>
-          </Box>
-
-          {/* Author */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Typography variant="caption" sx={{ color: '#836F60', width: '150px', fontSize: '1.25rem' }}>
-              Author
-            </Typography>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="Author name"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              sx={{ backgroundColor: '#fff' }}
-            />
-          </Box>
-
-          {/* Citation Count */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Typography variant="caption" sx={{ color: '#836F60', width: '150px', fontSize: '1.25rem' }}>
-              Min Citation count
-            </Typography>
-            <TextField
-              size="small"
-              placeholder="Min citations"
-              value={minCitations}
-              onChange={(e) => setMinCitations(e.target.value)}
-              sx={{ backgroundColor: '#fff' }}
-            />
           </Box>
         </Box>
       </StyledPaper>

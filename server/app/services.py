@@ -10,7 +10,7 @@ from nltk.stem import WordNetLemmatizer
 import spacy
 from PyPDF2 import PdfReader
 import os
-from transformers import T5Tokenizer, T5ForConditionalGeneration, AutoTokenizer, AutoModelForQuestionAnswering, pipeline
+from transformers import T5Tokenizer, T5ForConditionalGeneration, AutoTokenizer, AutoModelForQuestionAnswering, pipeline # type: ignore
 pdf_dir = "pdfs"
 if not os.path.exists(pdf_dir):
     os.makedirs(pdf_dir)
@@ -74,6 +74,7 @@ def fetch_relevant_papers(request: SearchRequest):
 
 
 
+text=""
 # Execute this line if you are running this code for the first time
 nltk.download('wordnet')
 nltk.download('omw-1.4')
@@ -139,10 +140,8 @@ def ask_question(question, context):
     result = qa_pipeline(question=question, context=context)
     return result['answer']
 
-
-# Step 4. Summarizing the Text
-
 def generate_section_summaries(pdf_url):
+    global text
     text = pdfReader(pdf_url)
     tokenizer = T5Tokenizer.from_pretrained("t5-base")
     model = T5ForConditionalGeneration.from_pretrained("t5-base")
@@ -183,13 +182,7 @@ def generate_section_summaries(pdf_url):
         "Conclusion": conclusion
     }
 
-
-# Step 6. Q&A Section
-# print("" * 20, "Q&A Section", "" * 20)
-# while True:
-#     question = input("\nEnter your question (or type 'exit' to quit): ")
-#     if question.lower() == 'exit':
-#         print("\nExiting Q&A Section. Goodbye!")
-#         break
-#     answer = ask_question(question, text)
-#     print(f"\nAnswer: {answer}")
+def ask(question):
+    print("\nQuestion:", question)
+    answer = ask_question(question, text)
+    return answer

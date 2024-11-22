@@ -81,8 +81,17 @@ const Paper = () => {
               {['Abstract', 'Introduction', 'Methods', 'Results', 'Conclusion'].map(section => (
                 <Button
                   key={section}
-                  variant={selectedSection === section ? 'contained' : 'outlined'}
                   onClick={() => setSelectedSection(section)}
+                  variant={selectedSection === section ? "contained" : "outlined"}
+                  sx={{
+                    py: 2,
+                    px: 4,
+                    bgcolor: selectedSection === section ? "#CBE9E9" : "gray.300",
+                    color: selectedSection === section ? '#1976d2' : "inherit",
+                    '&:hover': {
+                      bgcolor: selectedSection === section ? "#B0D4D4" : "gray.400", 
+                    },
+                  }}
                 >
                   {section}
                 </Button>
@@ -91,17 +100,28 @@ const Paper = () => {
             <div className="bg-gray-100 p-6">
               <div className="bg-white shadow-md rounded p-4">
                 <Typography variant="body1">
-                  {renderContent()} {/* Display content or skeleton */}
+                  {renderContent()}
                 </Typography>
               </div>
             </div>
           </div>
           <div className="w-1/2 my-4 shadow-md rounded p-4">
             <div className="bg-grey">
-              <Typography variant="h5" fontWeight="bold" color="text.primary">
-                Chat with paper
-              </Typography>
-              <ChatBox />
+              {loading ? (
+                <>
+                  <Skeleton variant="text" width="80%" height={30} />
+                  <Skeleton variant="rectangular" width="100%" height={40} className="my-4" />
+                  <Skeleton variant="rectangular" width="100%" height={40} className="my-4" />
+                  <Skeleton variant="rectangular" width="100%" height={40} className="my-4" />
+                </>
+              ) : (
+                <>
+                  <Typography variant="h5" fontWeight="bold" color="text.primary">
+                    Chat with paper
+                  </Typography>
+                  <ChatBox />
+                </>
+              )}
             </div>
           </div>
         </div>

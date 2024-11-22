@@ -8,3 +8,5 @@ class SearchRequest(BaseModel):
     max_results: Optional[int] = 10
     author: Optional[str] = None
 
+class ChatRequest(BaseModel):
+    question: str
