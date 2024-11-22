@@ -2,3 +2,9 @@ fastapi
 uvicorn 
 pyalex 
 requests
+beautifulsoup4
+pypdf2
+nltk
+spacy
+transformers
+pytorch

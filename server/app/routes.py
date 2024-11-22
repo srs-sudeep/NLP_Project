@@ -1,27 +1,40 @@
 from fastapi import APIRouter, HTTPException
 from app.models import SearchRequest
-from app.services import create_openalex_url, fetch_relevant_papers
+from app.services import fetch_relevant_papers,download_pdf,generate_section_summaries
 
 router = APIRouter()
 
 @router.post("/search")
 async def search_papers(request: SearchRequest):
     """
-    Search for relevant papers using OpenAlex API.
+    Search for relevant papers.
     """
     try:
-        # Construct URL
-        url = create_openalex_url(
-            query=request.query,
-            start_year=request.start_year,
-            end_year=request.end_year,
-            citation_count=request.citation_count,
-            published_in=request.published_in,
-            published_by_institution=request.published_by_institution,
-        )
-
         # Fetch papers
-        papers = fetch_relevant_papers(request.query, url)
+        papers = fetch_relevant_papers(request)
         return {"papers": papers}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/paper")
+async def get_paper(paper_url: str,pdf_name:str):
+    """
+    Get the full text of a paper.
+    """
+    try:
+        # Fetch paper
+        pdf_path = download_pdf(paper_url,pdf_name)
+        paper = generate_section_summaries(pdf_path)
+        return {"paper": paper }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/chat")
+async def get_chat():
+    """
+    Get the chatbot response.
+    """
+    try:
+        return {"chat": "Hello, how can I help you today?"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
